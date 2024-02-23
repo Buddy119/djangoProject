@@ -9,8 +9,7 @@ from langchain_core.prompts import PromptTemplate
 
 
 def get_agent(template):
-    os.environ["OPENAI_API_BASE"] = 'https://oneapi.xty.app/v1'
-    os.environ["OPENAI_API_KEY"] = "sk-SFuwfVoTW11a0EmAE471B14aDbFd43Cc9a4311F834C99aCb"
+    
     prompt = PromptTemplate.from_template(template)
     llm = ChatOpenAI(model_name="gpt-3.5-turbo")
     agent = prompt | llm | StrOutputParser()
