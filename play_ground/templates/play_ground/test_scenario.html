@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Scenario Generator Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Welcome to the Test Scenario Generator Page</h1>
+    <form id="testForm">
+        <label for="userInfo">Please Provide User Story:</label><br>
+        <textarea id="userInfo" name="userInfo" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="loading" style="display: none;">Processing...</div>
+    <div id="responseArea" style="margin-top: 20px;">
+        <strong>Test Scenario:</strong>
+        <div id="apiResponse"></div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $("#testForm").submit(function(event){
+                event.preventDefault();
+                $("#loading").show();
+                $("#apiResponse").html(''); // Clear previous response
+                $.ajax({
+                    url: '/playground/gpt',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "content": $("#userInfo").val(), "usage": "create_test_scenario" }),
+                    success: function(response) {
+                        $("#apiResponse").html(response.replace(/\n/g, "<br>"));
+                    },
+                    error: function(xhr, status, error) {
+                        $("#apiResponse").html("Error: " + error);
+                    },
+                    complete: function() {
+                        $("#loading").hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Script Convert Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Welcome to the Test Script Convert Page</h1>
+    <!-- Test Script Form -->
+    <form id="testScriptForm">
+        <label for="userScript">Please Provide Test Scenario:</label><br>
+        <textarea id="userScript" name="userScript" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="testScriptLoading" style="display: none;">Processing...</div>
+    <div style="margin-top: 20px;">
+        <strong>Test Script:</strong>
+        <div id="apiResponse"></div>
+
+    </div>
+
+    <script>
+        // Test Script Form Submission
+            $("#testScriptForm").submit(function(event){
+                event.preventDefault();
+                $("#testScriptLoading").show();
+                $("#apiResponse").html(''); // Clear previous response
+                $.ajax({
+                    url: '/playground/gpt',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "content": $("#userScript").val(), "usage": "convert_test_case" }),
+                    success: function(response) {
+                        $("#apiResponse").html(response.replace(/\n/g, "<br>"));
+                    },
+                    error: function(xhr, status, error) {
+                        $("#apiResponse").val("Error: " + error);
+                    },
+                    complete: function() {
+                        $("#testScriptLoading").hide();
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Your Schema Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Ask Your Schema Document</h1>
+    <input type="file" id="fileInput"><br><br>
+    <textarea id="textInput" rows="4" cols="50" placeholder="Enter your question here"></textarea><br>
+    <button id="submitBtn">Submit</button>
+    <div id="loading" style="display: none;">Processing...</div>
+    <div id="responseArea" style="margin-top: 20px;">
+        <strong>Answer:</strong>
+        <div id="agentOutput"></div>
+    </div>
+
+    <script>
+        // JavaScript for handling the form submission and updating the response area
+        $(document).ready(function(){
+        $("#submitBtn").click(function() {
+        var file = $('#fileInput').prop('files')[0];
+        var userInput = $('#textInput').val();
+
+        $("#loading").show();
+        $("#agentOutput").html('');
+        $.ajax({
+            url: '/playground/agent', // URL of your Django view for handling the agent
+            type: 'POST',
+            data: JSON.stringify({ "path": file, "question": userInput }),
+            contentType: 'application/json',
+            success: function(response) {
+                $("#agentOutput").html(response); // Display the response
+            },
+            error: function(xhr, status, error) {
+                $("#agentOutput").html("Error: " + error);
+            },
+            complete: function() {
+                        $("#loading").hide();
+                    }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
